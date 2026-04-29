@@ -46,9 +46,34 @@ def extract_bits(samples):
         bits.append(detect_bit(block))
     return bits
 
+def bits_to_bytes(bits):
+    bytes_out = []
+    for i in range(0, len(bits), 10):
+        frame = bits[i:i+10]
+        if len(frame) < 10:
+            break
+
+        start = frame[0]
+        data = frame[1:9]
+        stop = frame[9]
+
+        if start != 0 or stop != 1:
+            continue
+
+        value = 0
+        for i, bit in enumerate(data):
+            value |= (bit << i)
+
+        bytes_out.append(value)
+
+    return bytes_out
+
+def bytes_to_string(byte_list):
+    return ''.join(chr(b) for b in byte_list)
+
 if __name__ == "__main__":
     print("Loading WAV file...")
-    fs, samples = load_wav("message.wav")
+    fs, samples = load_wav("test2.wav")
     
     if fs != FS:
         raise ValueError(f"Expected {FS} Hz, got {fs} Hz")
@@ -58,6 +83,6 @@ if __name__ == "__main__":
     bits = extract_bits(samples)
     
     # Then convert bits to bytes and then to string for full message decoding
-    #data = bits_to_bytes(bits)
-    #text = bytes_to_string(data)
-    #print(text)
+    data = bits_to_bytes(bits)
+    text = bytes_to_string(data)
+    print(text)
