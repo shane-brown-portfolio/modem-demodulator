@@ -20,15 +20,15 @@ def load_wav(path: str):
 
     return fs, samples
 
-def tone_power(samples, N, f, fs):
-    I = 0.0
-    Q = 0.0
-    
-    for n in range(N):
-        angle = 2 * np.pi * f * n / fs
-        I += samples[n] * np.cos(angle)
-        Q += samples[n] * np.sin(angle)
-    
+def tone_power(samples, f, fs):
+    N = len(samples)
+    n = np.arange(N)
+    cos_ref = np.cos(2 * np.pi * f * n / fs)
+    sin_ref = np.sin(2 * np.pi * f * n / fs)
+
+    I = np.dot(samples, cos_ref)
+    Q = np.dot(samples, sin_ref)
+
     return I**2 + Q**2
 
 def detect_bit(block):
@@ -36,6 +36,15 @@ def detect_bit(block):
     p_space = tone_power(block, FREQ_SPACE, FS)
 
     return 1 if p_mark > p_space else 0
+
+def extract_bits(samples):
+    bits = []
+    for i in range(0, len(samples), SAMPLES_PER_BIT):
+        block = samples[i:i+SAMPLES_PER_BIT]
+        if len(block) < SAMPLES_PER_BIT:
+            break
+        bits.append(detect_bit(block))
+    return bits
 
 if __name__ == "__main__":
     print("Loading WAV file...")
@@ -45,3 +54,10 @@ if __name__ == "__main__":
         raise ValueError(f"Expected {FS} Hz, got {fs} Hz")
     
     print(f"Sample rate: {fs} Hz, Total samples: {len(samples)}")
+
+    bits = extract_bits(samples)
+    
+    # Then convert bits to bytes and then to string for full message decoding
+    #data = bits_to_bytes(bits)
+    #text = bytes_to_string(data)
+    #print(text)
