@@ -20,6 +20,23 @@ def load_wav(path: str):
 
     return fs, samples
 
+def tone_power(samples, N, f, fs):
+    I = 0.0
+    Q = 0.0
+    
+    for n in range(N):
+        angle = 2 * np.pi * f * n / fs
+        I += samples[n] * np.cos(angle)
+        Q += samples[n] * np.sin(angle)
+    
+    return I**2 + Q**2
+
+def detect_bit(block):
+    p_mark = tone_power(block, FREQ_MARK, FS)
+    p_space = tone_power(block, FREQ_SPACE, FS)
+
+    return 1 if p_mark > p_space else 0
+
 if __name__ == "__main__":
     print("Loading WAV file...")
     fs, samples = load_wav("message.wav")
