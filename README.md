@@ -97,7 +97,6 @@ One of the biggest challenges was ensuring proper bit alignment. Since each bit 
 Another challenge was remembering that the data bits are LSB-first, which initially led to incorrect characters until it was fixed. I had to ensure that each group of 10 bits had a valid start bit (0) and stop bit (1) to help filter out errors and confirm the decoding was working properly.
 
 The provided test files were very helpful during development. Once the program correctly decoded those known messages, it worked reliably and was straightforward to apply it to the actual message file.
-Overall, this project was a good exercise in combining signal processing concepts with bit-level decoding.
 
 ## Still To Be Done
 While the program meets correctly decodes messages, there are several possible improvements:
