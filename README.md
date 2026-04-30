@@ -69,24 +69,8 @@ This program decodes a Bell 103 FSK signal by processing the audio in fixed-size
    - Frames with invalid start/stop bits are skipped.
    - Extracts the 8 data bits and converts them to bytes.
 
-6. **Convert to Text**
+5. **Convert to Text**
    - Translates bytes into ASCII characters to produce the final message.
-
-
-4. **Bit Stream Construction**
-   - Each processed block produces a single bit.
-   - All bits are collected into a continuous bit stream.
-
-5. **Byte Decoding (8N1 Framing)**
-   - Bits are grouped into frames of 10:
-     - 1 start bit (0)
-     - 8 data bits (LSB-first)
-     - 1 stop bit (1)
-   - Frames with invalid start/stop bits are skipped.
-   - Valid data bits are converted into byte values.
-
-6. **ASCII Conversion**
-   - The decoded bytes are converted into characters to reconstruct the original message.
 
 ## How It Went
 Overall, the project went well once the core tone detection logic was working correctly.
